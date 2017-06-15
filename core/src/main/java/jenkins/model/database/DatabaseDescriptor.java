@@ -1,4 +1,4 @@
-package hudson.database;
+package jenkins.model.database;
 
 import hudson.DescriptorExtensionList;
 import hudson.model.Descriptor;

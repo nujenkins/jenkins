@@ -1,4 +1,5 @@
-package hudson.database;
+package jenkins.model.database;
+
 import hudson.ExtensionPoint;
 import hudson.model.AbstractDescribableImpl;
 
