@@ -1,6 +1,6 @@
-package hudson.database;
+package jenkins.model.database;
 
-
+import hudson.Extension;
 import hudson.Util;
 import hudson.util.FormValidation;
 import hudson.util.Secret;
@@ -34,6 +34,7 @@ public class PostgreSQLDatabase extends AbstractRemoteDatabase {
         return "jdbc:postgresql://" + hostname + '/' + database;
     }
 
+    @Extension
     public static class DescriptorImpl extends AbstractRemoteDatabaseDescriptor {
         @Override
         public String getDisplayName() {
