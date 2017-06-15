@@ -1,4 +1,4 @@
-package hudson.database;
+package jenkins.model.database;
 
 import hudson.Extension;
 import hudson.model.TopLevelItem;
@@ -18,8 +18,9 @@ import java.util.logging.Logger;
 
 /**
  * Allows user to select, and if necessary, configure the preferred {@link PerItemDatabase}.
- */
-@Extension(ordinal=GlobalDatabaseConfiguration.ORDINAL+0.005f)
+*/
+
+@Extension(ordinal= GlobalDatabaseConfiguration.ORDINAL+0.005f)
 public class PerItemDatabaseConfiguration extends GlobalConfiguration {
 
     private static final Logger LOGGER = Logger.getLogger(PerItemDatabaseConfiguration.class.getName());
@@ -75,7 +76,8 @@ public class PerItemDatabaseConfiguration extends GlobalConfiguration {
      * Convenience method to find the configured database.
      * If no database has yet been configured, and none is available, the return value will always throw {@link SQLException}.
      * @return the database factory
-     */
+    */
+
     public static @Nonnull PerItemDatabase find() {
         PerItemDatabase database = findOrNull();
         return database != null ? database : new PerItemDatabase() {

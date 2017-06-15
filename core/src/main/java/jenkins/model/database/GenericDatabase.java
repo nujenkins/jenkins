@@ -1,4 +1,4 @@
-package hudson.database;
+package jenkins.model.database;
 
 import hudson.Extension;
 import hudson.util.FormValidation;

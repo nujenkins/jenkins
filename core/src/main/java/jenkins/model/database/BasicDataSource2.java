@@ -1,4 +1,4 @@
-package hudson.database;
+package jenkins.model.database;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbcp.ConnectionFactory;
