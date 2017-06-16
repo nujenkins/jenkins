@@ -24,6 +24,7 @@
  */
 package hudson.model;
 
+import com.google.gson.Gson;
 import com.infradna.tool.bridge_method_injector.WithBridgeMethods;
 import hudson.AbortException;
 import hudson.XmlFile;
@@ -44,6 +45,8 @@ import hudson.util.AlternativeUiTextProvider.Message;
 import hudson.util.AtomicFileWriter;
 import hudson.util.IOUtils;
 import hudson.util.Secret;
+
+import java.sql.*;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -53,6 +56,9 @@ import jenkins.model.Jenkins;
 import jenkins.model.queue.ItemDeletion;
 import jenkins.security.NotReallyRoleSensitiveCallable;
 import jenkins.util.xml.XMLUtils;
+
+import jenkins.model.database.Database;
+import jenkins.model.database.GlobalDatabaseConfiguration;
 
 import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.types.FileSet;
@@ -511,12 +517,33 @@ public abstract class AbstractItem extends Actionable implements Item, HttpDelet
      */
     public synchronized void save() throws IOException {
         if(BulkChange.contains(this))   return;
+
+        Database db = GlobalDatabaseConfiguration.get().getDatabase();
+        String sql = "INSERT INTO job AS c (name, config) VALUES (?,?::jsonb) "+
+                     "ON CONFLICT(name) DO UPDATE SET config = EXCLUDED.config;";
+
+        try {
+            Connection con = db.getDataSource().getConnection();
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1,getName());
+            pstmt.setString(2,getConfigJson());
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new IOException(e);
+        }
+
+
         getConfigFile().write(this);
         SaveableListener.fireOnChange(this, getConfigFile());
     }
 
     public final XmlFile getConfigFile() {
         return Items.getConfigFile(this);
+    }
+
+    public final String getConfigJson() {
+        return new Gson().toJson(this);
     }
 
     public Descriptor getDescriptorByName(String className) {
